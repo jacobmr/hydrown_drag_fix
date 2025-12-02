@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hydrow Controller - Resistor Detail</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      font-family: 'Segoe UI', -apple-system, sans-serif;
+      color: #e8e8e8;
+      padding: 24px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    
+    .header h1 {
+      font-size: 1.8rem;
+      background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    
+    .header p {
+      color: #888;
+      font-size: 0.9rem;
+    }
+    
+    .panel {
+      background: rgba(0,0,0,0.3);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 24px;
+    }
+    
+    .panel h2 {
+      color: #00d4ff;
+      margin-bottom: 16px;
+      font-size: 1.2rem;
+    }
+    
+    .callout {
+      margin-top: 20px;
+      padding: 16px 20px;
+      border-radius: 8px;
+      border-left: 4px solid;
+    }
+    
+    .callout.info {
+      background: rgba(0,212,255,0.1);
+      border-color: #00d4ff;
+    }
+    
+    .callout.warning {
+      background: rgba(255,107,107,0.1);
+      border-color: #ff6b6b;
+    }
+    
+    .callout h4 {
+      margin-bottom: 8px;
+    }
+    
+    .callout.info h4 { color: #00d4ff; }
+    .callout.warning h4 { color: #ff6b6b; }
+    
+    .callout p, .callout li {
+      color: #ccc;
+      line-height: 1.6;
+    }
+    
+    .callout ul {
+      margin-left: 20px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>RESISTOR PLACEMENT DETAIL</h1>
+    <p>330Ω Gate Resistor + 10K Pull-Down</p>
+  </div>
+  
+  <!-- SINGLE MOSFET DETAIL -->
+  <div class="panel">
+    <h2>Single MOSFET Circuit (×2 for both coils)</h2>
+    <svg viewBox="0 0 800 400">
+      <defs>
+        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1a3a5c" stroke-width="0.5"/>
+        </pattern>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#4a9eff"/>
+        </marker>
+      </defs>
+      <rect width="800" height="400" fill="#0a1929"/>
+      <rect width="800" height="400" fill="url(#grid)"/>
+      
+      <!-- ESP32 GPIO -->
+      <g transform="translate(40, 120)">
+        <rect x="0" y="0" width="100" height="60" fill="#0d47a1" stroke="#2196f3" stroke-width="2" rx="6"/>
+        <text x="50" y="25" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">ESP32</text>
+        <text x="50" y="45" text-anchor="middle" fill="#90caf9" font-size="11">GPIO25/26</text>
+        
+        <!-- Output pin -->
+        <circle cx="100" cy="30" r="6" fill="#4aff4a" stroke="#2d8c2d" stroke-width="2"/>
+      </g>
+      
+      <!-- PWM Signal line from ESP32 -->
+      <line x1="146" y1="150" x2="180" y2="150" stroke="#4a9eff" stroke-width="3" marker-end="url(#arrowhead)"/>
+      <text x="163" y="140" text-anchor="middle" fill="#4a9eff" font-size="10">PWM</text>
+      
+      <!-- 330Ω Gate Resistor -->
+      <g transform="translate(190, 130)">
+        <rect x="0" y="0" width="80" height="40" fill="#1e3a5f" stroke="#ff9f43" stroke-width="3" rx="4"/>
+        <text x="40" y="18" text-anchor="middle" fill="#ff9f43" font-size="14" font-weight="bold">330Ω</text>
+        <text x="40" y="34" text-anchor="middle" fill="#ccc" font-size="10">Gate Resistor</text>
+      </g>
+      
+      <!-- Connection point (junction) -->
+      <circle cx="320" cy="150" r="8" fill="#4aff4a" stroke="#2d8c2d" stroke-width="2"/>
+      <text x="320" y="130" text-anchor="middle" fill="#4aff4a" font-size="11" font-weight="bold">JUNCTION</text>
+      
+      <!-- Line from 330Ω to junction -->
+      <line x1="270" y1="150" x2="312" y2="150" stroke="#4a9eff" stroke-width="3"/>
+      
+      <!-- Line from junction down to 10K -->
+      <line x1="320" y1="158" x2="320" y2="220" stroke="#4aff4a" stroke-width="3"/>
+      
+      <!-- 10K Pull-down Resistor -->
+      <g transform="translate(280, 220)">
+        <rect x="0" y="0" width="80" height="40" fill="#1e3a5f" stroke="#4aff4a" stroke-width="3" rx="4"/>
+        <text x="40" y="18" text-anchor="middle" fill="#4aff4a" font-size="14" font-weight="bold">10KΩ</text>
+        <text x="40" y="34" text-anchor="middle" fill="#ccc" font-size="10">Pull-Down</text>
+      </g>
+      
+      <!-- Line from 10K to Ground -->
+      <line x1="320" y1="260" x2="320" y2="310" stroke="#4aff4a" stroke-width="3"/>
+      
+      <!-- Ground Symbol -->
+      <g transform="translate(300, 310)">
+        <line x1="20" y1="0" x2="20" y2="10" stroke="#4aff4a" stroke-width="3"/>
+        <line x1="5" y1="10" x2="35" y2="10" stroke="#4aff4a" stroke-width="3"/>
+        <line x1="10" y1="18" x2="30" y2="18" stroke="#4aff4a" stroke-width="2"/>
+        <line x1="15" y1="26" x2="25" y2="26" stroke="#4aff4a" stroke-width="2"/>
+        <text x="20" y="45" text-anchor="middle" fill="#4aff4a" font-size="11">GND</text>
+      </g>
+      
+      <!-- Line from junction to MOSFET Gate -->
+      <line x1="328" y1="150" x2="420" y2="150" stroke="#4a9eff" stroke-width="3" marker-end="url(#arrowhead)"/>
+      
+      <!-- MOSFET -->
+      <g transform="translate(430, 80)">
+        <rect x="0" y="0" width="120" height="140" fill="#1e1e1e" stroke="#7b2cbf" stroke-width="3" rx="6"/>
+        <text x="60" y="25" text-anchor="middle" fill="#7b2cbf" font-size="14" font-weight="bold">IRLZ44N</text>
+        <text x="60" y="45" text-anchor="middle" fill="#888" font-size="10">N-Channel MOSFET</text>
+        
+        <!-- MOSFET Symbol -->
+        <g transform="translate(25, 55)">
+          <!-- Gate line -->
+          <line x1="0" y1="35" x2="25" y2="35" stroke="#4aff4a" stroke-width="3"/>
+          <text x="-10" y="40" fill="#4aff4a" font-size="12" font-weight="bold">G</text>
+          
+          <!-- Vertical bar (gate insulator) -->
+          <line x1="30" y1="15" x2="30" y2="55" stroke="#7b2cbf" stroke-width="2"/>
+          
+          <!-- Channel -->
+          <line x1="38" y1="15" x2="38" y2="25" stroke="#7b2cbf" stroke-width="2"/>
+          <line x1="38" y1="32" x2="38" y2="42" stroke="#7b2cbf" stroke-width="2"/>
+          <line x1="38" y1="48" x2="38" y2="58" stroke="#7b2cbf" stroke-width="2"/>
+          
+          <!-- Drain -->
+          <line x1="38" y1="15" x2="70" y2="15" stroke="#cd7f32" stroke-width="3"/>
+          <line x1="70" y1="15" x2="70" y2="0" stroke="#cd7f32" stroke-width="3"/>
+          <text x="80" y="5" fill="#cd7f32" font-size="12" font-weight="bold">D</text>
+          
+          <!-- Source -->
+          <line x1="38" y1="55" x2="70" y2="55" stroke="#ff6b6b" stroke-width="3"/>
+          <line x1="70" y1="55" x2="70" y2="70" stroke="#ff6b6b" stroke-width="3"/>
+          <text x="80" y="65" fill="#ff6b6b" font-size="12" font-weight="bold">S</text>
+          
+          <!-- Arrow -->
+          <polygon points="38,38 48,35 48,41" fill="#7b2cbf"/>
+        </g>
+      </g>
+      
+      <!-- To Coil label -->
+      <g transform="translate(560, 60)">
+        <line x1="0" y1="75" x2="60" y2="75" stroke="#cd7f32" stroke-width="3"/>
+        <text x="100" y="70" fill="#cd7f32" font-size="12">→ To Coil (+)</text>
+        <text x="100" y="88" fill="#888" font-size="10">(via flyback diode)</text>
+      </g>
+      
+      <!-- To Ground label -->
+      <g transform="translate(560, 155)">
+        <line x1="0" y1="50" x2="60" y2="50" stroke="#ff6b6b" stroke-width="3"/>
+        <text x="100" y="45" fill="#ff6b6b" font-size="12">→ To Ground</text>
+        <text x="100" y="63" fill="#888" font-size="10">(common with coil -)</text>
+      </g>
+      
+      <!-- Annotation box -->
+      <g transform="translate(50, 280)">
+        <rect x="0" y="0" width="200" height="100" fill="rgba(0,0,0,0.4)" stroke="#444" rx="6"/>
+        <text x="100" y="25" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">KEY POINT</text>
+        <text x="10" y="50" fill="#ccc" font-size="10">Both resistors connect</text>
+        <text x="10" y="68" fill="#ccc" font-size="10">to the GATE pin at the</text>
+        <text x="10" y="86" fill="#4aff4a" font-size="10" font-weight="bold">green JUNCTION point</text>
+      </g>
+    </svg>
+  </div>
+  
+  <!-- FULL CIRCUIT VIEW -->
+  <div class="panel">
+    <h2>Complete Dual-Channel Circuit</h2>
+    <svg viewBox="0 0 900 550">
+      <defs>
+        <pattern id="grid2" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1a3a5c" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="900" height="550" fill="#0a1929"/>
+      <rect width="900" height="550" fill="url(#grid2)"/>
+      
+      <!-- Title -->
+      <text x="450" y="30" text-anchor="middle" fill="#00d4ff" font-size="14" font-weight="bold">
+        COMPLETE CIRCUIT WITH RESISTOR PLACEMENT
+      </text>
+      
+      <!-- ESP32 -->
+      <g transform="translate(40, 100)">
+        <rect x="0" y="0" width="100" height="200" fill="#0d47a1" stroke="#2196f3" stroke-width="2" rx="8"/>
+        <text x="50" y="30" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">ESP32</text>
+        
+        <!-- GPIO25 -->
+        <circle cx="100" cy="70" r="5" fill="#4aff4a"/>
+        <text x="85" y="74" text-anchor="end" fill="#4aff4a" font-size="9">GPIO25</text>
+        
+        <!-- GPIO26 -->
+        <circle cx="100" cy="130" r="5" fill="#4aff4a"/>
+        <text x="85" y="134" text-anchor="end" fill="#4aff4a" font-size="9">GPIO26</text>
+        
+        <!-- GND -->
+        <circle cx="100" cy="180" r="5" fill="#ff6b6b"/>
+        <text x="85" y="184" text-anchor="end" fill="#ff6b6b" font-size="9">GND</text>
+      </g>
+      
+      <!-- ============ CHANNEL 1 (Top) ============ -->
+      
+      <!-- Line from GPIO25 -->
+      <line x1="145" y1="170" x2="170" y2="170" stroke="#4a9eff" stroke-width="2"/>
+      
+      <!-- 330Ω #1 -->
+      <g transform="translate(170, 155)">
+        <rect x="0" y="0" width="60" height="30" fill="#1e3a5f" stroke="#ff9f43" stroke-width="2" rx="3"/>
+        <text x="30" y="20" text-anchor="middle" fill="#ff9f43" font-size="11" font-weight="bold">330Ω</text>
+      </g>
+      
+      <!-- Junction point 1 -->
+      <circle cx="260" cy="170" r="6" fill="#4aff4a"/>
+      <line x1="230" y1="170" x2="254" y2="170" stroke="#4a9eff" stroke-width="2"/>
+      
+      <!-- Line down to 10K #1 -->
+      <line x1="260" y1="176" x2="260" y2="210" stroke="#4aff4a" stroke-width="2"/>
+      
+      <!-- 10K Pull-down #1 -->
+      <g transform="translate(230, 210)">
+        <rect x="0" y="0" width="60" height="30" fill="#1e3a5f" stroke="#4aff4a" stroke-width="2" rx="3"/>
+        <text x="30" y="20" text-anchor="middle" fill="#4aff4a" font-size="11" font-weight="bold">10KΩ</text>
+      </g>
+      
+      <!-- Line from 10K to ground rail -->
+      <line x1="260" y1="240" x2="260" y2="270" stroke="#4aff4a" stroke-width="2"/>
+      <line x1="260" y1="270" x2="140" y2="270" stroke="#4aff4a" stroke-width="2"/>
+      <line x1="140" y1="270" x2="140" y2="280" stroke="#4aff4a" stroke-width="2"/>
+      
+      <!-- Line from junction to MOSFET 1 -->
+      <line x1="266" y1="170" x2="330" y2="170" stroke="#4a9eff" stroke-width="2"/>
+      
+      <!-- MOSFET 1 -->
+      <g transform="translate(330, 130)">
+        <rect x="0" y="0" width="80" height="80" fill="#1e1e1e" stroke="#7b2cbf" stroke-width="2" rx="4"/>
+        <text x="40" y="20" text-anchor="middle" fill="#7b2cbf" font-size="10" font-weight="bold">Q1</text>
+        <text x="40" y="38" text-anchor="middle" fill="#fff" font-size="9">IRLZ44N</text>
+        
+        <!-- Pin labels -->
+        <text x="5" y="55" fill="#4aff4a" font-size="9">G</text>
+        <text x="40" y="55" text-anchor="middle" fill="#cd7f32" font-size="9">D</text>
+        <text x="72" y="55" fill="#ff6b6b" font-size="9">S</text>
+        
+        <!-- Pin dots -->
+        <circle cx="10" cy="40" r="4" fill="#4aff4a"/>
+        <circle cx="40" cy="65" r="4" fill="#cd7f32"/>
+        <circle cx="70" cy="65" r="4" fill="#ff6b6b"/>
+      </g>
+      
+      <!-- Flyback Diode 1 -->
+      <g transform="translate(430, 130)">
+        <rect x="0" y="0" width="60" height="50" fill="#1e1e1e" stroke="#ff9f43" stroke-width="2" rx="3"/>
+        <text x="30" y="18" text-anchor="middle" fill="#ff9f43" font-size="9" font-weight="bold">D1</text>
+        <text x="30" y="35" text-anchor="middle" fill="#fff" font-size="8">1N5822</text>
+        <text x="30" y="47" text-anchor="middle" fill="#888" font-size="7">stripe→+48V</text>
+      </g>
+      
+      <!-- Line from Q1 Drain to Diode -->
+      <line x1="370" y1="145" x2="370" y2="120" stroke="#cd7f32" stroke-width="2"/>
+      <line x1="370" y1="120" x2="430" y2="120" stroke="#cd7f32" stroke-width="2"/>
+      <line x1="460" y1="120" x2="460" y2="130" stroke="#cd7f32" stroke-width="2"/>
+      
+      <!-- Coil 1 -->
+      <g transform="translate(510, 100)">
+        <rect x="0" y="0" width="90" height="70" fill="#2d1810" stroke="#cd7f32" stroke-width="2" rx="5"/>
+        <text x="45" y="20" text-anchor="middle" fill="#cd7f32" font-size="10" font-weight="bold">COIL 1</text>
+        <path d="M 20 35 Q 35 28 50 35 Q 65 42 80 35" stroke="#cd7f32" stroke-width="2" fill="none"/>
+        <path d="M 20 50 Q 35 43 50 50 Q 65 57 80 50" stroke="#cd7f32" stroke-width="2" fill="none"/>
+      </g>
+      
+      <!-- Lines to Coil 1 -->
+      <line x1="490" y1="155" x2="510" y2="155" stroke="#cd7f32" stroke-width="2"/>
+      <line x1="600" y1="135" x2="620" y2="135" stroke="#ff6b6b" stroke-width="2"/>
+      
+      <!-- Q1 Source to ground -->
+      <line x1="400" y1="195" x2="400" y2="270" stroke="#ff6b6b" stroke-width="2"/>
+      <line x1="400" y1="270" x2="260" y2="270" stroke="#4aff4a" stroke-width="2"/>
+      
+      
+      <!-- ============ CHANNEL 2 (Bottom) ============ -->
+      
+      <!-- Line from GPIO26 -->
+      <line x1="145" y1="230" x2="170" y2="350" stroke="#4a9eff" stroke-width="2"/>
+      
+      <!-- 330Ω #2 -->
+      <g transform="translate(170, 335)">
+        <rect x="0" y="0" width="60" height="30" fill="#1e3a5f" stroke="#ff9f43" stroke-width="2" rx="3"/>
+        <text x="30" y="20" text-anchor="middle" fill="#ff9f43" font-size="11" font-weight="bold">330Ω</text>
+      </g>
+      
+      <!-- Junction point 2 -->
+      <circle cx="260" cy="350" r="6" fill="#4aff4a"/>
+      <line x1="230" y1="350" x2="254" y2="350" stroke="#4a9eff" stroke-width="2"/>
+      
+      <!-- Line down to 10K #2 -->
+      <line x1="260" y1="356" x2="260" y2="390" stroke="#4aff4a" stroke-width="2"/>
+      
+      <!-- 10K Pull-down #2 -->
+      <g transform="translate(230, 390)">
+        <rect x="0" y="0" width="60" height="30" fill="#1e3a5f" stroke="#4aff4a" stroke-width="2" rx="3"/>
+        <text x="30" y="20" text-anchor="middle" fill="#4aff4a" font-size="11" font-weight="bold">10KΩ</text>
+      </g>
+      
+      <!-- Line from 10K to ground rail -->
+      <line x1="260" y1="420" x2="260" y2="450" stroke="#4aff4a" stroke-width="2"/>
+      <line x1="260" y1="450" x2="140" y2="450" stroke="#4aff4a" stroke-width="2"/>
+      <line x1="140" y1="450" x2="140" y2="280" stroke="#4aff4a" stroke-width="2"/>
+      
+      <!-- Line from junction to MOSFET 2 -->
+      <line x1="266" y1="350" x2="330" y2="350" stroke="#4a9eff" stroke-width="2"/>
+      
+      <!-- MOSFET 2 -->
+      <g transform="translate(330, 310)">
+        <rect x="0" y="0" width="80" height="80" fill="#1e1e1e" stroke="#7b2cbf" stroke-width="2" rx="4"/>
+        <text x="40" y="20" text-anchor="middle" fill="#7b2cbf" font-size="10" font-weight="bold">Q2</text>
+        <text x="40" y="38" text-anchor="middle" fill="#fff" font-size="9">IRLZ44N</text>
+        
+        <text x="5" y="55" fill="#4aff4a" font-size="9">G</text>
+        <text x="40" y="55" text-anchor="middle" fill="#cd7f32" font-size="9">D</text>
+        <text x="72" y="55" fill="#ff6b6b" font-size="9">S</text>
+        
+        <circle cx="10" cy="40" r="4" fill="#4aff4a"/>
+        <circle cx="40" cy="65" r="4" fill="#cd7f32"/>
+        <circle cx="70" cy="65" r="4" fill="#ff6b6b"/>
+      </g>
+      
+      <!-- Flyback Diode 2 -->
+      <g transform="translate(430, 310)">
+        <rect x="0" y="0" width="60" height="50" fill="#1e1e1e" stroke="#ff9f43" stroke-width="2" rx="3"/>
+        <text x="30" y="18" text-anchor="middle" fill="#ff9f43" font-size="9" font-weight="bold">D2</text>
+        <text x="30" y="35" text-anchor="middle" fill="#fff" font-size="8">1N5822</text>
+        <text x="30" y="47" text-anchor="middle" fill="#888" font-size="7">stripe→+48V</text>
+      </g>
+      
+      <!-- Line from Q2 Drain to Diode -->
+      <line x1="370" y1="325" x2="370" y2="300" stroke="#cd7f32" stroke-width="2"/>
+      <line x1="370" y1="300" x2="430" y2="300" stroke="#cd7f32" stroke-width="2"/>
+      <line x1="460" y1="300" x2="460" y2="310" stroke="#cd7f32" stroke-width="2"/>
+      
+      <!-- Coil 2 -->
+      <g transform="translate(510, 280)">
+        <rect x="0" y="0" width="90" height="70" fill="#2d1810" stroke="#cd7f32" stroke-width="2" rx="5"/>
+        <text x="45" y="20" text-anchor="middle" fill="#cd7f32" font-size="10" font-weight="bold">COIL 2</text>
+        <path d="M 20 35 Q 35 28 50 35 Q 65 42 80 35" stroke="#cd7f32" stroke-width="2" fill="none"/>
+        <path d="M 20 50 Q 35 43 50 50 Q 65 57 80 50" stroke="#cd7f32" stroke-width="2" fill="none"/>
+      </g>
+      
+      <!-- Lines to Coil 2 -->
+      <line x1="490" y1="335" x2="510" y2="335" stroke="#cd7f32" stroke-width="2"/>
+      <line x1="600" y1="315" x2="620" y2="315" stroke="#ff6b6b" stroke-width="2"/>
+      
+      <!-- Q2 Source to ground -->
+      <line x1="400" y1="375" x2="400" y2="450" stroke="#ff6b6b" stroke-width="2"/>
+      <line x1="400" y1="450" x2="260" y2="450" stroke="#4aff4a" stroke-width="2"/>
+      
+      <!-- ============ 48V POWER ============ -->
+      
+      <!-- 48V Supply -->
+      <g transform="translate(700, 180)">
+        <rect x="0" y="0" width="100" height="60" fill="#1e3a5f" stroke="#ff6b6b" stroke-width="2" rx="4"/>
+        <text x="50" y="20" text-anchor="middle" fill="#ff6b6b" font-size="10" font-weight="bold">48V PSU</text>
+        <text x="50" y="38" text-anchor="middle" fill="#fff" font-size="9">From Hydrow</text>
+        <circle cx="30" cy="50" r="5" fill="#ff6b6b"/>
+        <circle cx="70" cy="50" r="5" fill="#4aff4a"/>
+        <text x="30" y="53" text-anchor="middle" fill="#fff" font-size="8">+</text>
+        <text x="70" y="53" text-anchor="middle" fill="#fff" font-size="8">-</text>
+      </g>
+      
+      <!-- 48V lines -->
+      <line x1="730" y1="180" x2="730" y2="100" stroke="#ff6b6b" stroke-width="2"/>
+      <line x1="730" y1="100" x2="620" y2="100" stroke="#ff6b6b" stroke-width="2"/>
+      <line x1="620" y1="100" x2="620" y2="135" stroke="#ff6b6b" stroke-width="2"/>
+      
+      <line x1="730" y1="180" x2="730" y2="280" stroke="#ff6b6b" stroke-width="2"/>
+      <line x1="730" y1="280" x2="620" y2="280" stroke="#ff6b6b" stroke-width="2"/>
+      <line x1="620" y1="280" x2="620" y2="315" stroke="#ff6b6b" stroke-width="2"/>
+      
+      <!-- Ground return from 48V -->
+      <line x1="770" y1="230" x2="770" y2="490" stroke="#4aff4a" stroke-width="2"/>
+      <line x1="770" y1="490" x2="140" y2="490" stroke="#4aff4a" stroke-width="2"/>
+      <line x1="140" y1="490" x2="140" y2="450" stroke="#4aff4a" stroke-width="2"/>
+      
+      <!-- Ground symbol -->
+      <g transform="translate(125, 490)">
+        <line x1="15" y1="0" x2="15" y2="10" stroke="#4aff4a" stroke-width="2"/>
+        <line x1="5" y1="10" x2="25" y2="10" stroke="#4aff4a" stroke-width="2"/>
+        <line x1="8" y1="16" x2="22" y2="16" stroke="#4aff4a" stroke-width="2"/>
+        <line x1="11" y1="22" x2="19" y2="22" stroke="#4aff4a" stroke-width="2"/>
+      </g>
+      <text x="145" y="530" text-anchor="middle" fill="#4aff4a" font-size="10">COMMON GND</text>
+      
+      <!-- Legend -->
+      <g transform="translate(620, 380)">
+        <rect x="0" y="0" width="180" height="120" fill="rgba(0,0,0,0.4)" stroke="#444" rx="6"/>
+        <text x="90" y="20" text-anchor="middle" fill="#fff" font-size="10" font-weight="bold">LEGEND</text>
+        
+        <line x1="15" y1="40" x2="45" y2="40" stroke="#4a9eff" stroke-width="2"/>
+        <text x="55" y="44" fill="#888" font-size="9">PWM Signal</text>
+        
+        <line x1="15" y1="58" x2="45" y2="58" stroke="#4aff4a" stroke-width="2"/>
+        <text x="55" y="62" fill="#888" font-size="9">Ground</text>
+        
+        <line x1="15" y1="76" x2="45" y2="76" stroke="#ff6b6b" stroke-width="2"/>
+        <text x="55" y="80" fill="#888" font-size="9">+48V Power</text>
+        
+        <line x1="15" y1="94" x2="45" y2="94" stroke="#cd7f32" stroke-width="2"/>
+        <text x="55" y="98" fill="#888" font-size="9">Coil / Drain</text>
+        
+        <circle cx="30" cy="110" r="5" fill="#4aff4a"/>
+        <text x="55" y="114" fill="#888" font-size="9">Junction point</text>
+      </g>
+    </svg>
+  </div>
+  
+  <div class="callout info">
+    <h4>💡 Summary</h4>
+    <p>For each MOSFET channel:</p>
+    <ul>
+      <li><strong>330Ω</strong> goes IN SERIES between ESP32 GPIO and the gate</li>
+      <li><strong>10K</strong> goes from the gate to ground (at the junction after the 330Ω)</li>
+      <li>Both resistors share a common connection point at the MOSFET gate</li>
+    </ul>
+  </div>
+  
+  <div class="callout warning">
+    <h4>⚠️ Why Both Resistors Matter</h4>
+    <ul>
+      <li><strong>330Ω:</strong> Limits the current spike when charging/discharging the gate capacitance. Protects the ESP32 GPIO.</li>
+      <li><strong>10K:</strong> Keeps the gate at 0V when the ESP32 isn't actively driving it (during boot, reset, or if the ESP32 crashes). Without this, the coils could turn on unexpectedly.</li>
+    </ul>
+  </div>
+</body>
+</html>

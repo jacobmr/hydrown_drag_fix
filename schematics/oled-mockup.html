@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hydrow OLED Display Mockup</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      font-family: 'Segoe UI', -apple-system, sans-serif;
+      color: #e8e8e8;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    h1 {
+      font-size: 1.8rem;
+      background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    
+    .subtitle {
+      color: #888;
+      margin-bottom: 40px;
+    }
+    
+    .display-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+    
+    .display-row {
+      display: flex;
+      gap: 60px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .display-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .display-label {
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+    
+    /* Physical OLED frame */
+    .oled-frame {
+      background: #0a0a0a;
+      border-radius: 4px;
+      padding: 8px;
+      box-shadow: 
+        0 4px 20px rgba(0,0,0,0.5),
+        inset 0 1px 1px rgba(255,255,255,0.05);
+    }
+    
+    /* The actual display area - 128x64 scaled up 3x */
+    .oled-screen {
+      width: 384px;  /* 128 * 3 */
+      height: 192px; /* 64 * 3 */
+      background: #000;
+      position: relative;
+      border: 1px solid #222;
+      image-rendering: pixelated;
+    }
+    
+    /* Yellow zone - top 16 pixels (48px scaled) */
+    .yellow-zone {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px; /* 16 * 3 */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 12px;
+      font-family: 'Courier New', monospace;
+      color: #ffcc00;
+      font-size: 18px;
+      font-weight: bold;
+      text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+    }
+    
+    /* Blue zone - bottom 48 pixels (144px scaled) */
+    .blue-zone {
+      position: absolute;
+      top: 48px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Courier New', monospace;
+      color: #00bfff;
+      text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+    }
+    
+    .drag-value {
+      font-size: 72px;
+      font-weight: bold;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    
+    .control-source {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.8;
+    }
+    
+    .progress-bar {
+      width: 360px; /* 120 * 3 */
+      height: 24px; /* 8 * 3 */
+      border: 3px solid #00bfff;
+      position: relative;
+    }
+    
+    .progress-fill {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      bottom: 3px;
+      background: #00bfff;
+      transition: width 0.1s ease;
+    }
+    
+    /* Interactive controls */
+    .controls {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .slider-container label {
+      color: #888;
+      min-width: 150px;
+    }
+    
+    input[type="range"] {
+      width: 300px;
+      accent-color: #00d4ff;
+    }
+    
+    .source-toggle {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .source-toggle button {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .source-toggle button.active {
+      background: linear-gradient(135deg, #7b2cbf, #00d4ff);
+      color: white;
+    }
+    
+    .source-toggle button:not(.active) {
+      background: rgba(255,255,255,0.1);
+      color: #888;
+    }
+    
+    .wiring-info {
+      margin-top: 50px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 600px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .wiring-info h3 {
+      color: #00d4ff;
+      margin-bottom: 16px;
+    }
+    
+    .wiring-info table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .wiring-info td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .wiring-info td:first-child {
+      color: #4aff4a;
+      font-family: monospace;
+      font-weight: bold;
+    }
+    
+    .wiring-info td:last-child {
+      color: #ccc;
+    }
+
+    .pixel-note {
+      margin-top: 30px;
+      padding: 16px 24px;
+      background: rgba(255,204,0,0.1);
+      border-left: 4px solid #ffcc00;
+      border-radius: 4px;
+      max-width: 600px;
+    }
+    
+    .pixel-note p {
+      color: #ccc;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <h1>HYDROW OLED DISPLAY</h1>
+  <p class="subtitle">SSD1306 128x64 • Blue/Yellow Split</p>
+  
+  <div class="display-container">
+    <div class="display-row">
+      <!-- Display at 0% -->
+      <div class="display-wrapper">
+        <div class="display-label">Drag Off</div>
+        <div class="oled-frame">
+          <div class="oled-screen">
+            <div class="yellow-zone">
+              <span>HYDROW DRAG</span>
+              <span>WiFi</span>
+            </div>
+            <div class="blue-zone">
+              <div class="drag-value">0%</div>
+              <div class="control-source">HOME ASSISTANT</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Display at 50% -->
+      <div class="display-wrapper">
+        <div class="display-label">Medium Drag</div>
+        <div class="oled-frame">
+          <div class="oled-screen">
+            <div class="yellow-zone">
+              <span>HYDROW DRAG</span>
+              <span>WiFi</span>
+            </div>
+            <div class="blue-zone">
+              <div class="drag-value">50%</div>
+              <div class="control-source">LOCAL</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="display-row">
+      <!-- Display at 75% -->
+      <div class="display-wrapper">
+        <div class="display-label">Heavy Drag</div>
+        <div class="oled-frame">
+          <div class="oled-screen">
+            <div class="yellow-zone">
+              <span>HYDROW DRAG</span>
+              <span>WiFi</span>
+            </div>
+            <div class="blue-zone">
+              <div class="drag-value">75%</div>
+              <div class="control-source">HOME ASSISTANT</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Display at 100% -->
+      <div class="display-wrapper">
+        <div class="display-label">Maximum Drag</div>
+        <div class="oled-frame">
+          <div class="oled-screen">
+            <div class="yellow-zone">
+              <span>HYDROW DRAG</span>
+              <span>WiFi</span>
+            </div>
+            <div class="blue-zone">
+              <div class="drag-value">100%</div>
+              <div class="control-source">LOCAL</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Interactive Demo -->
+    <div class="display-wrapper" style="margin-top: 20px;">
+      <div class="display-label">▼ Interactive Demo ▼</div>
+      <div class="oled-frame">
+        <div class="oled-screen">
+          <div class="yellow-zone">
+            <span>HYDROW DRAG</span>
+            <span id="wifi-status">WiFi</span>
+          </div>
+          <div class="blue-zone">
+            <div class="drag-value" id="drag-display">0%</div>
+            <div class="control-source" id="source-display">HOME ASSISTANT</div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="controls">
+      <div class="slider-container">
+        <label>Simulated Pot / HA Slider:</label>
+        <input type="range" min="0" max="100" value="0" id="drag-slider" oninput="updateDisplay()">
+      </div>
+      
+      <div class="source-toggle">
+        <button class="active" id="btn-ha" onclick="setSource('ha')">Home Assistant</button>
+        <button id="btn-local" onclick="setSource('local')">Local (Pot)</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="pixel-note">
+    <p><strong>About the display:</strong> The SSD1306 128x64 blue/yellow version has the top 16 pixel rows in yellow and the remaining 48 rows in blue. This is physical—you can't change it in software. The ESPHome config takes advantage of this by putting the header/status in the yellow zone and the main drag info in the blue zone.</p>
+  </div>
+  
+  <div class="wiring-info">
+    <h3>📍 OLED + Pot Wiring</h3>
+    <table>
+      <tr>
+        <td>GPIO21 (SDA)</td>
+        <td>→ OLED SDA pin</td>
+      </tr>
+      <tr>
+        <td>GPIO22 (SCL)</td>
+        <td>→ OLED SCL pin</td>
+      </tr>
+      <tr>
+        <td>3.3V</td>
+        <td>→ OLED VCC pin</td>
+      </tr>
+      <tr>
+        <td>GND</td>
+        <td>→ OLED GND pin</td>
+      </tr>
+      <tr>
+        <td>GPIO34</td>
+        <td>→ Potentiometer wiper (middle pin)</td>
+      </tr>
+      <tr>
+        <td>3.3V</td>
+        <td>→ Potentiometer high side</td>
+      </tr>
+      <tr>
+        <td>GND</td>
+        <td>→ Potentiometer low side</td>
+      </tr>
+    </table>
+  </div>
+
+  <script>
+    let currentSource = 'ha';
+    
+    function updateDisplay() {
+      const value = document.getElementById('drag-slider').value;
+      document.getElementById('drag-display').textContent = value + '%';
+      document.getElementById('progress-fill').style.width = value + '%';
+    }
+    
+    function setSource(source) {
+      currentSource = source;
+      document.getElementById('btn-ha').classList.toggle('active', source === 'ha');
+      document.getElementById('btn-local').classList.toggle('active', source === 'local');
+      document.getElementById('source-display').textContent = source === 'ha' ? 'HOME ASSISTANT' : 'LOCAL';
+    }
+  </script>
+</body>
+</html>
